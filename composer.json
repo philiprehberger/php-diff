@@ -1,7 +1,9 @@
 {
     "name": "philiprehberger/php-diff",
     "description": "Diff strings, arrays, and objects with unified, HTML, and structured output",
+    "type": "library",
     "keywords": ["diff", "compare", "unified-diff", "html-diff", "myers", "php"],
+    "homepage": "https://github.com/philiprehberger/php-diff",
     "license": "MIT",
     "authors": [
         {
@@ -29,6 +31,11 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "lint": "vendor/bin/pint",
+        "analyse": "vendor/bin/phpstan analyse"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
