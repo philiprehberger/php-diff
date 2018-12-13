@@ -6,23 +6,15 @@
 
 Diff strings, arrays, and objects with unified, HTML, and structured output.
 
----
-
 ## Requirements
 
-| Dependency | Version |
-|------------|---------|
-| PHP        | ^8.2    |
-
----
+- PHP 8.2+
 
 ## Installation
 
 ```bash
 composer require philiprehberger/php-diff
 ```
-
----
 
 ## Usage
 
@@ -71,8 +63,6 @@ $diff->hasChanges();  // true
 $diff->changes();     // [PropertyChange { property: 'age', from: 30, to: 31 }]
 ```
 
----
-
 ## API
 
 ### `Diff` (Static Entry Point)
@@ -116,8 +106,6 @@ $diff->changes();     // [PropertyChange { property: 'age', from: 30, to: 31 }]
 - **`Change`** — `key`, `old`, `new`, `type` (`added`|`removed`|`changed`)
 - **`PropertyChange`** — `property`, `from`, `to`
 - **`DiffStats`** — `added`, `removed`, `unchanged`
-
----
 
 ## Development
 
