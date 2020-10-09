@@ -25,11 +25,38 @@ use PhilipRehberger\Diff\Diff;
 
 $diff = Diff::strings("hello\nworld", "hello\nphp");
 
-$diff->hasChanges();    // true
-$diff->toUnified();     // unified diff string
-$diff->toHtml();        // HTML with <ins>/<del> tags
-$diff->toArray();       // array of DiffLine objects
-$diff->stats();         // DiffStats { added: 1, removed: 1, unchanged: 1 }
+$diff->hasChanges();         // true
+$diff->toUnified();          // unified diff string
+$diff->toHtml();             // HTML with <ins>/<del> tags
+$diff->toHtmlSideBySide();   // side-by-side HTML table
+$diff->toArray();            // array of DiffLine objects
+$diff->stats();              // DiffStats { added: 1, removed: 1, unchanged: 1 }
+$diff->similarity();         // 0.333… (0.0 = completely different, 1.0 = identical)
+```
+
+### Similarity Score
+
+```php
+use PhilipRehberger\Diff\Diff;
+
+$diff = Diff::strings("hello\nworld", "hello\nphp");
+
+$diff->similarity(); // 0.333… — one of three lines is unchanged
+```
+
+### Side-by-Side HTML
+
+```php
+use PhilipRehberger\Diff\Diff;
+
+$diff = Diff::strings("hello\nworld", "hello\nphp");
+
+$html = $diff->toHtmlSideBySide();
+// <table class="diff-table">
+//   <tr><td class="diff-left diff-unchanged">hello</td><td class="diff-right diff-unchanged">hello</td></tr>
+//   <tr><td class="diff-left diff-removed">world</td><td class="diff-right"></td></tr>
+//   <tr><td class="diff-left"></td><td class="diff-right diff-added">php</td></tr>
+// </table>
 ```
 
 ### Comparing Arrays
@@ -79,9 +106,11 @@ $diff->changes();     // [PropertyChange { property: 'age', from: 30, to: 31 }]
 |--------|---------|-------------|
 | `toUnified(int $context = 3)` | `string` | Unified diff format |
 | `toHtml()` | `string` | HTML with ins/del tags |
+| `toHtmlSideBySide()` | `string` | Side-by-side HTML table |
 | `toArray()` | `array<DiffLine>` | Array of DiffLine value objects |
 | `hasChanges()` | `bool` | Whether any differences exist |
 | `stats()` | `DiffStats` | Count of added, removed, unchanged lines |
+| `similarity()` | `float` | Ratio of unchanged to total lines (0.0–1.0) |
 
 ### `ArrayDiff`
 

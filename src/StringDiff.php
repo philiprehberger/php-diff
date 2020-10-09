@@ -116,6 +116,61 @@ final class StringDiff
     }
 
     /**
+     * Calculate the similarity ratio between the two texts.
+     *
+     * Returns a float between 0.0 (completely different) and 1.0 (identical).
+     */
+    public function similarity(): float
+    {
+        $total = count($this->operations);
+
+        if ($total === 0) {
+            return 1.0;
+        }
+
+        $unchanged = 0;
+
+        foreach ($this->operations as $op) {
+            if ($op['type'] === 'unchanged') {
+                $unchanged++;
+            }
+        }
+
+        return $unchanged / $total;
+    }
+
+    /**
+     * Generate a side-by-side HTML diff with two columns.
+     */
+    public function toHtmlSideBySide(): string
+    {
+        $html = '<table class="diff-table">';
+
+        foreach ($this->operations as $op) {
+            $escaped = htmlspecialchars($op['value'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+            $html .= match ($op['type']) {
+                'removed' => '<tr>'
+                    .'<td class="diff-left diff-removed">'.$escaped.'</td>'
+                    .'<td class="diff-right"></td>'
+                    .'</tr>',
+                'added' => '<tr>'
+                    .'<td class="diff-left"></td>'
+                    .'<td class="diff-right diff-added">'.$escaped.'</td>'
+                    .'</tr>',
+                default => '<tr>'
+                    .'<td class="diff-left diff-unchanged">'.$escaped.'</td>'
+                    .'<td class="diff-right diff-unchanged">'.$escaped.'</td>'
+                    .'</tr>',
+            };
+        }
+
+        $html .= '</table>';
+
+        return $html;
+    }
+
+    /**
      * Get statistics about the diff.
      */
     public function stats(): DiffStats
