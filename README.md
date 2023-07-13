@@ -1,8 +1,12 @@
 # PHP Diff
 
-[![Tests](https://github.com/philiprehberger/php-diff/actions/workflows/tests.yml/badge.svg)](https://github.com/philiprehberger/php-diff/actions/workflows/tests.yml)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/philiprehberger/php-diff.svg)](https://packagist.org/packages/philiprehberger/php-diff)
+[![CI](https://github.com/philiprehberger/php-diff/actions/workflows/tests.yml/badge.svg)](https://github.com/philiprehberger/php-diff/actions/workflows/tests.yml)
+[![Packagist Version](https://img.shields.io/packagist/v/philiprehberger/php-diff)](https://packagist.org/packages/philiprehberger/php-diff)
+[![GitHub Release](https://img.shields.io/github/v/release/philiprehberger/php-diff)](https://github.com/philiprehberger/php-diff/releases)
+[![Last Updated](https://img.shields.io/github/last-commit/philiprehberger/php-diff)](https://github.com/philiprehberger/php-diff/commits/main)
 [![License](https://img.shields.io/github/license/philiprehberger/php-diff)](LICENSE)
+[![Bug Reports](https://img.shields.io/github/issues/philiprehberger/php-diff/bug)](https://github.com/philiprehberger/php-diff/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+[![Feature Requests](https://img.shields.io/github/issues/philiprehberger/php-diff/enhancement)](https://github.com/philiprehberger/php-diff/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
 [![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 Diff strings, arrays, and objects with unified, HTML, and structured output.
@@ -30,9 +34,39 @@ $diff->hasChanges();         // true
 $diff->toUnified();          // unified diff string
 $diff->toHtml();             // HTML with <ins>/<del> tags
 $diff->toHtmlSideBySide();   // side-by-side HTML table
+$diff->toAnsi();             // ANSI-colored terminal output
 $diff->toArray();            // array of DiffLine objects
 $diff->stats();              // DiffStats { added: 1, removed: 1, unchanged: 1 }
-$diff->similarity();         // 0.333… (0.0 = completely different, 1.0 = identical)
+$diff->similarity();         // 0.333... (0.0 = completely different, 1.0 = identical)
+```
+
+### Ignore Options
+
+```php
+use PhilipRehberger\Diff\Diff;
+
+// Normalize whitespace before comparing
+$diff = Diff::strings("hello  world", "hello world")->ignoreWhitespace();
+$diff->hasChanges(); // false
+
+// Case-insensitive comparison
+$diff = Diff::strings("Hello", "hello")->ignoreCase();
+$diff->hasChanges(); // false
+
+// Ignore blank lines
+$diff = Diff::strings("hello\n\nworld", "hello\nworld")->ignoreBlankLines();
+$diff->hasChanges(); // false
+```
+
+### Context Lines
+
+```php
+use PhilipRehberger\Diff\Diff;
+
+$diff = Diff::strings($oldText, $newText);
+
+$diff->toUnified(1);   // 1 line of context around changes
+$diff->toUnified(5);   // 5 lines of context around changes
 ```
 
 ### Similarity Score
@@ -42,7 +76,7 @@ use PhilipRehberger\Diff\Diff;
 
 $diff = Diff::strings("hello\nworld", "hello\nphp");
 
-$diff->similarity(); // 0.333… — one of three lines is unchanged
+$diff->similarity(); // 0.333... - one of three lines is unchanged
 ```
 
 ### Side-by-Side HTML
@@ -105,13 +139,17 @@ $diff->changes();     // [PropertyChange { property: 'age', from: 30, to: 31 }]
 
 | Method | Returns | Description |
 |--------|---------|-------------|
+| `ignoreWhitespace()` | `StringDiff` | Normalize whitespace before comparing |
+| `ignoreCase()` | `StringDiff` | Lowercase both inputs before comparing |
+| `ignoreBlankLines()` | `StringDiff` | Remove blank lines before comparing |
 | `toUnified(int $context = 3)` | `string` | Unified diff format |
+| `toAnsi(int $context = 3)` | `string` | ANSI-colored unified diff for terminals |
 | `toHtml()` | `string` | HTML with ins/del tags |
 | `toHtmlSideBySide()` | `string` | Side-by-side HTML table |
 | `toArray()` | `array<DiffLine>` | Array of DiffLine value objects |
 | `hasChanges()` | `bool` | Whether any differences exist |
 | `stats()` | `DiffStats` | Count of added, removed, unchanged lines |
-| `similarity()` | `float` | Ratio of unchanged to total lines (0.0–1.0) |
+| `similarity()` | `float` | Ratio of unchanged to total lines (0.0-1.0) |
 
 ### `ArrayDiff`
 
@@ -132,10 +170,10 @@ $diff->changes();     // [PropertyChange { property: 'age', from: 30, to: 31 }]
 
 ### Value Objects
 
-- **`DiffLine`** — `type` (`added`|`removed`|`unchanged`), `content`, `lineNumber`
-- **`Change`** — `key`, `old`, `new`, `type` (`added`|`removed`|`changed`)
-- **`PropertyChange`** — `property`, `from`, `to`
-- **`DiffStats`** — `added`, `removed`, `unchanged`
+- **`DiffLine`** - `type` (`added`|`removed`|`unchanged`), `content`, `lineNumber`
+- **`Change`** - `key`, `old`, `new`, `type` (`added`|`removed`|`changed`)
+- **`PropertyChange`** - `property`, `from`, `to`
+- **`DiffStats`** - `added`, `removed`, `unchanged`
 
 ## Development
 
@@ -143,9 +181,15 @@ $diff->changes();     // [PropertyChange { property: 'age', from: 30, to: 31 }]
 composer install
 vendor/bin/phpunit
 vendor/bin/pint --test
-vendor/bin/phpstan analyse
 ```
+
+## Support
+
+If you find this package useful, consider giving it a star on GitHub — it helps motivate continued maintenance and development.
+
+[![LinkedIn](https://img.shields.io/badge/Philip%20Rehberger-LinkedIn-0A66C2?logo=linkedin)](https://www.linkedin.com/in/philiprehberger)
+[![More packages](https://img.shields.io/badge/more-open%20source%20packages-blue)](https://philiprehberger.com/open-source-packages)
 
 ## License
 
-MIT
+[MIT](LICENSE)
