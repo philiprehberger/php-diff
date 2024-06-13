@@ -1,13 +1,8 @@
 # PHP Diff
 
-[![CI](https://github.com/philiprehberger/php-diff/actions/workflows/tests.yml/badge.svg)](https://github.com/philiprehberger/php-diff/actions/workflows/tests.yml)
-[![Packagist Version](https://img.shields.io/packagist/v/philiprehberger/php-diff)](https://packagist.org/packages/philiprehberger/php-diff)
-[![GitHub Release](https://img.shields.io/github/v/release/philiprehberger/php-diff)](https://github.com/philiprehberger/php-diff/releases)
-[![Last Updated](https://img.shields.io/github/last-commit/philiprehberger/php-diff)](https://github.com/philiprehberger/php-diff/commits/main)
-[![License](https://img.shields.io/github/license/philiprehberger/php-diff)](LICENSE)
-[![Bug Reports](https://img.shields.io/github/issues/philiprehberger/php-diff/bug)](https://github.com/philiprehberger/php-diff/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Feature Requests](https://img.shields.io/github/issues/philiprehberger/php-diff/enhancement)](https://github.com/philiprehberger/php-diff/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
-[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
+[![Tests](https://github.com/philiprehberger/php-diff/actions/workflows/tests.yml/badge.svg)](https://github.com/philiprehberger/php-diff/actions/workflows/tests.yml)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/philiprehberger/php-diff.svg)](https://packagist.org/packages/philiprehberger/php-diff)
+[![Last updated](https://img.shields.io/github/last-commit/philiprehberger/php-diff)](https://github.com/philiprehberger/php-diff/commits/main)
 
 Diff strings, arrays, and objects with unified, HTML, and structured output.
 
@@ -185,10 +180,21 @@ vendor/bin/pint --test
 
 ## Support
 
-If you find this package useful, consider giving it a star on GitHub — it helps motivate continued maintenance and development.
+If you find this project useful:
 
-[![LinkedIn](https://img.shields.io/badge/Philip%20Rehberger-LinkedIn-0A66C2?logo=linkedin)](https://www.linkedin.com/in/philiprehberger)
-[![More packages](https://img.shields.io/badge/more-open%20source%20packages-blue)](https://philiprehberger.com/open-source-packages)
+⭐ [Star the repo](https://github.com/philiprehberger/php-diff)
+
+🐛 [Report issues](https://github.com/philiprehberger/php-diff/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+
+💡 [Suggest features](https://github.com/philiprehberger/php-diff/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+
+❤️ [Sponsor development](https://github.com/sponsors/philiprehberger)
+
+🌐 [All Open Source Projects](https://philiprehberger.com/open-source-packages)
+
+💻 [GitHub Profile](https://github.com/philiprehberger)
+
+🔗 [LinkedIn Profile](https://www.linkedin.com/in/philiprehberger)
 
 ## License
 
