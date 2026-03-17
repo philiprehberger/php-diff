@@ -2,7 +2,6 @@
 
 [![Tests](https://github.com/philiprehberger/php-diff/actions/workflows/tests.yml/badge.svg)](https://github.com/philiprehberger/php-diff/actions/workflows/tests.yml)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/philiprehberger/php-diff.svg)](https://packagist.org/packages/philiprehberger/php-diff)
-[![PHP Version Require](https://img.shields.io/packagist/php-v/philiprehberger/php-diff.svg)](https://packagist.org/packages/philiprehberger/php-diff)
 [![License](https://img.shields.io/github/license/philiprehberger/php-diff)](LICENSE)
 
 Diff strings, arrays, and objects with unified, HTML, and structured output.
@@ -120,33 +119,15 @@ $diff->changes();     // [PropertyChange { property: 'age', from: 30, to: 31 }]
 
 ---
 
-## Testing
+## Development
 
 ```bash
 composer install
 vendor/bin/phpunit
-```
-
-Code style:
-
-```bash
-vendor/bin/pint
-```
-
-Static analysis:
-
-```bash
+vendor/bin/pint --test
 vendor/bin/phpstan analyse
 ```
 
----
-
-## Changelog
-
-Please see [CHANGELOG.md](CHANGELOG.md) for recent changes.
-
----
-
 ## License
 
-The MIT License (MIT). Please see [LICENSE](LICENSE) for more information.
+MIT
