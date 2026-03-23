@@ -158,6 +158,115 @@ final class FormatterTest extends TestCase
     }
 
     // -------------------------------------------------------------------------
+    // Side-by-side HTML output format
+    // -------------------------------------------------------------------------
+
+    public function test_html_side_by_side_wraps_in_table(): void
+    {
+        $result = Diff::strings('a', 'b');
+
+        $html = $result->toHtmlSideBySide();
+
+        $this->assertStringStartsWith('<table class="diff-table">', $html);
+        $this->assertStringEndsWith('</table>', $html);
+    }
+
+    public function test_html_side_by_side_contains_left_and_right_columns(): void
+    {
+        $result = Diff::strings("a\nb", "a\nc");
+
+        $html = $result->toHtmlSideBySide();
+
+        $this->assertStringContainsString('diff-left', $html);
+        $this->assertStringContainsString('diff-right', $html);
+    }
+
+    public function test_html_side_by_side_marks_added_lines(): void
+    {
+        $result = Diff::strings('', 'new line');
+
+        $html = $result->toHtmlSideBySide();
+
+        $this->assertStringContainsString('diff-added', $html);
+        $this->assertStringContainsString('<td class="diff-right diff-added">new line</td>', $html);
+        $this->assertStringContainsString('<td class="diff-left"></td>', $html);
+    }
+
+    public function test_html_side_by_side_marks_removed_lines(): void
+    {
+        $result = Diff::strings('old line', '');
+
+        $html = $result->toHtmlSideBySide();
+
+        $this->assertStringContainsString('diff-removed', $html);
+        $this->assertStringContainsString('<td class="diff-left diff-removed">old line</td>', $html);
+        $this->assertStringContainsString('<td class="diff-right"></td>', $html);
+    }
+
+    public function test_html_side_by_side_marks_unchanged_lines(): void
+    {
+        $result = Diff::strings("keep\nchange", "keep\nnew");
+
+        $html = $result->toHtmlSideBySide();
+
+        $this->assertStringContainsString('diff-unchanged', $html);
+    }
+
+    public function test_html_side_by_side_escapes_special_characters(): void
+    {
+        $result = Diff::strings('<script>alert("xss")</script>', '<b>safe</b>');
+
+        $html = $result->toHtmlSideBySide();
+
+        $this->assertStringNotContainsString('<script>', $html);
+        $this->assertStringContainsString('&lt;script&gt;', $html);
+    }
+
+    public function test_html_side_by_side_for_empty_strings(): void
+    {
+        $result = Diff::strings('', '');
+
+        $html = $result->toHtmlSideBySide();
+
+        $this->assertSame('<table class="diff-table"></table>', $html);
+    }
+
+    // -------------------------------------------------------------------------
+    // Similarity
+    // -------------------------------------------------------------------------
+
+    public function test_similarity_identical_strings_returns_one(): void
+    {
+        $result = Diff::strings("a\nb\nc", "a\nb\nc");
+
+        $this->assertSame(1.0, $result->similarity());
+    }
+
+    public function test_similarity_completely_different_strings_returns_zero(): void
+    {
+        $result = Diff::strings('old', 'new');
+
+        $this->assertSame(0.0, $result->similarity());
+    }
+
+    public function test_similarity_partially_matching_strings(): void
+    {
+        $result = Diff::strings("a\nb\nc", "a\nx\nc");
+
+        $similarity = $result->similarity();
+
+        $this->assertGreaterThan(0.0, $similarity);
+        $this->assertLessThan(1.0, $similarity);
+    }
+
+    public function test_similarity_empty_strings_returns_one(): void
+    {
+        $result = Diff::strings('', '');
+
+        $this->assertSame(1.0, $result->similarity());
+    }
+
+    // -------------------------------------------------------------------------
     // Array (DiffLine) output format
     // -------------------------------------------------------------------------
 
