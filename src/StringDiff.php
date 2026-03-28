@@ -14,6 +14,12 @@ final class StringDiff
     /** @var array<int, array{type: string, value: string}> */
     private readonly array $operations;
 
+    private bool $ignoreWhitespaceOption = false;
+
+    private bool $ignoreCaseOption = false;
+
+    private bool $ignoreBlankLinesOption = false;
+
     /**
      * Create a new StringDiff instance.
      *
@@ -28,15 +34,49 @@ final class StringDiff
     }
 
     /**
+     * Create a new StringDiff with whitespace normalization applied.
+     */
+    public function ignoreWhitespace(): self
+    {
+        $clone = clone $this;
+        $clone->ignoreWhitespaceOption = true;
+
+        return $clone;
+    }
+
+    /**
+     * Create a new StringDiff with case-insensitive comparison.
+     */
+    public function ignoreCase(): self
+    {
+        $clone = clone $this;
+        $clone->ignoreCaseOption = true;
+
+        return $clone;
+    }
+
+    /**
+     * Create a new StringDiff with blank line removal applied.
+     */
+    public function ignoreBlankLines(): self
+    {
+        $clone = clone $this;
+        $clone->ignoreBlankLinesOption = true;
+
+        return $clone;
+    }
+
+    /**
      * Generate a unified diff string.
      */
     public function toUnified(int $context = 3): string
     {
-        if (! $this->hasChanges()) {
+        $operations = $this->resolveOperations();
+
+        if (! $this->operationsHaveChanges($operations)) {
             return '';
         }
 
-        $operations = $this->operations;
         $lines = [];
         $hunks = $this->buildHunks($operations, $context);
 
@@ -55,6 +95,35 @@ final class StringDiff
         }
 
         return implode("\n", $lines);
+    }
+
+    /**
+     * Generate an ANSI-colored unified diff string for terminal output.
+     */
+    public function toAnsi(int $context = 3): string
+    {
+        $unified = $this->toUnified($context);
+
+        if ($unified === '') {
+            return '';
+        }
+
+        $lines = explode("\n", $unified);
+        $colored = [];
+
+        foreach ($lines as $line) {
+            if (str_starts_with($line, '@@')) {
+                $colored[] = "\033[36m".$line."\033[0m";
+            } elseif (str_starts_with($line, '-')) {
+                $colored[] = "\033[31m".$line."\033[0m";
+            } elseif (str_starts_with($line, '+')) {
+                $colored[] = "\033[32m".$line."\033[0m";
+            } else {
+                $colored[] = $line;
+            }
+        }
+
+        return implode("\n", $colored);
     }
 
     /**
@@ -106,13 +175,7 @@ final class StringDiff
      */
     public function hasChanges(): bool
     {
-        foreach ($this->operations as $op) {
-            if ($op['type'] !== 'unchanged') {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->operationsHaveChanges($this->resolveOperations());
     }
 
     /**
@@ -192,6 +255,59 @@ final class StringDiff
             removed: $removed,
             unchanged: $unchanged,
         );
+    }
+
+    /**
+     * Resolve operations considering ignore options.
+     *
+     * When ignore options are set, the diff is recomputed with normalized lines.
+     *
+     * @return array<int, array{type: string, value: string}>
+     */
+    private function resolveOperations(): array
+    {
+        if (! $this->ignoreWhitespaceOption && ! $this->ignoreCaseOption && ! $this->ignoreBlankLinesOption) {
+            return $this->operations;
+        }
+
+        $oldLines = $this->oldLines;
+        $newLines = $this->newLines;
+
+        if ($this->ignoreBlankLinesOption) {
+            $oldLines = array_values(array_filter($oldLines, static fn (string $line): bool => trim($line) !== ''));
+            $newLines = array_values(array_filter($newLines, static fn (string $line): bool => trim($line) !== ''));
+        }
+
+        $normalizedOld = $oldLines;
+        $normalizedNew = $newLines;
+
+        if ($this->ignoreWhitespaceOption) {
+            $normalizedOld = array_map(static fn (string $line): string => preg_replace('/\s+/', ' ', trim($line)) ?? $line, $normalizedOld);
+            $normalizedNew = array_map(static fn (string $line): string => preg_replace('/\s+/', ' ', trim($line)) ?? $line, $normalizedNew);
+        }
+
+        if ($this->ignoreCaseOption) {
+            $normalizedOld = array_map(static fn (string $line): string => mb_strtolower($line), $normalizedOld);
+            $normalizedNew = array_map(static fn (string $line): string => mb_strtolower($line), $normalizedNew);
+        }
+
+        return Myers::diff($normalizedOld, $normalizedNew);
+    }
+
+    /**
+     * Check whether operations contain any changes.
+     *
+     * @param  array<int, array{type: string, value: string}>  $operations
+     */
+    private function operationsHaveChanges(array $operations): bool
+    {
+        foreach ($operations as $op) {
+            if ($op['type'] !== 'unchanged') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

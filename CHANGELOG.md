@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-03-27
+
+### Added
+- `ignoreWhitespace()`, `ignoreCase()`, and `ignoreBlankLines()` modifiers for string diffs
+- Context lines parameter for `toUnified()` output
+- `toAnsi()` method for terminal-colored diff output
+
 ## [1.1.0] - 2026-03-22
 
 ### Added

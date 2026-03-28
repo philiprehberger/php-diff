@@ -77,7 +77,7 @@ final class Myers
         $result = [];
 
         for ($i = $d; $i > 0; $i--) {
-            $v = $trace[$i - 1];
+            $v = $trace[$i];
             $k = $x - $y;
 
             if ($k === -$i || ($k !== $i && ($v[$k - 1] ?? 0) < ($v[$k + 1] ?? 0))) {
